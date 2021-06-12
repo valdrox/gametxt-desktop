@@ -10,6 +10,10 @@ const { desktopCapturer } = require("electron");
 //   console.log(e);
 // };
 
+import Bonjour from "bonjour";
+
+const bonjour = Bonjour();
+
 const getSourcesWithThumbnails = async () => {
   const sources = await desktopCapturer.getSources({
     types: ["window", "screen"],
@@ -23,8 +27,21 @@ const getSourcesWithThumbnails = async () => {
   return sources;
 };
 
+const findLocalService = () => {
+  return new Promise((resolve, reject) => {
+    bonjour.find({ type: "gametxt" }, (service) => {
+      const { address } = service.referer;
+      const { protocol, port } = service;
+      resolve({ protocol, address, port });
+      // initialize converter.
+    });
+  });
+};
+
 export default async (status) => {
   const sources = await getSourcesWithThumbnails();
+
+  const { protocol, address, port } = await findLocalService();
 
   //   for (const source of sources) {
   //     if (source.name === "Electron") {
@@ -50,5 +67,5 @@ export default async (status) => {
   //     }
   //   }
 
-  return { status, sources };
+  return { status, sources, protocol, address, port };
 };
