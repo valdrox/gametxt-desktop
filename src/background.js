@@ -3,6 +3,7 @@
 import { app, protocol, BrowserWindow, ipcMain } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
+import capture from "./capture";
 const path = require("path");
 
 const isDevelopment = process.env.NODE_ENV !== "production";
@@ -84,6 +85,8 @@ if (isDevelopment) {
   }
 }
 
-ipcMain.on("toMain", (event, args) => {
-  win.webContents.send("fromMain", args);
+ipcMain.on("toMain", async (event, { status }) => {
+  const newState = await capture(status);
+
+  win.webContents.send("fromMain", newState);
 });
