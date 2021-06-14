@@ -1,11 +1,19 @@
 "use strict";
 
-import { app, protocol, BrowserWindow, ipcMain } from "electron";
+import {
+  app,
+  protocol,
+  BrowserWindow,
+  ipcMain,
+  desktopCapturer,
+} from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
-import capture from "./capture";
-const path = require("path");
 
+const path = require("path");
+import Bonjour from "bonjour";
+
+const bonjour = Bonjour();
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 // Scheme must be registered before the app is ready
@@ -85,8 +93,40 @@ if (isDevelopment) {
   }
 }
 
-ipcMain.on("toMain", async (event, { status }) => {
-  const newState = await capture(status);
+const findLocalService = () => {
+  return new Promise((resolve, reject) => {
+    bonjour.find({ type: "gametxt" }, (service) => {
+      resolve(service);
+    });
+  });
+};
 
-  win.webContents.send("fromMain", newState);
+const getSourcesWithThumbnails = async () => {
+  const sources = await desktopCapturer.getSources({
+    types: [
+      "window",
+      // "screen"
+    ],
+  });
+
+  for (const source of sources) {
+    const thumbnailPNG = await source.thumbnail.toPNG();
+
+    const size = await source.thumbnail.getSize();
+    source.thumbnail = { size, thumbnailPNG };
+  }
+  return sources;
+};
+
+// to recieve stuff
+ipcMain.on("toMain", async (event, { init, status }) => {
+  if (init) {
+    getSourcesWithThumbnails().then((sources) => {
+      win.webContents.send("fromMain", { sources });
+    });
+
+    findLocalService().then((service) => {
+      win.webContents.send("fromMain", { service });
+    });
+  }
 });

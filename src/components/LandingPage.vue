@@ -25,6 +25,7 @@
       </ol>
     </div>
     <div id="right-container">
+      <Streamer />
       <button
         id="toggle-streaming"
         @click="toggleStream"
@@ -37,12 +38,15 @@
 </template>
 
 <script>
+import Streamer from "./Streamer.vue";
 export default {
   name: "landing-page",
   data() {
     return { isStreaming: false, localStreamingAddress: null };
   },
-  components: {},
+  components: {
+    Streamer,
+  },
   methods: {
     toggleStream() {
       this.videoStreamer.toggleStream();
