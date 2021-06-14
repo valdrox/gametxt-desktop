@@ -1,15 +1,42 @@
 <template>
-  <div>
-    <ul>
-      <li v-for="source in sources" :key="source.title">{{ source.name }}</li>
-    </ul>
-    <div v-if="remoteUid">
-      <button @click="toggleStream">bob</button>
+  <div id="container">
+    <div id="window-selector-container">
+      <ElSelect
+        v-model="sourceId"
+        placeholder="Select a Window"
+        id="window-selector"
+      >
+        <ElOption
+          v-for="source in sources"
+          :key="source.id"
+          :label="source.name"
+          :value="source.id"
+        >
+        </ElOption>
+      </ElSelect>
+    </div>
+    <div id="stream-button">
+      <ElButton
+        @click="toggleStream"
+        type="dark"
+        :disabled="!remoteUid || !sourceId"
+        >{{
+          !remoteUid
+            ? "Waiting for connection."
+            : !sourceId
+            ? "Connection found. Select a window."
+            : peerCall
+            ? "stop streaming"
+            : "start streaming"
+        }}</ElButton
+      >
     </div>
   </div>
 </template>
 
 <script>
+import { ElButton, ElSelect, ElOption } from "element-plus";
+
 import Peer from "peerjs/dist/peerjs.js";
 
 export default {
@@ -17,7 +44,14 @@ export default {
     return {
       sources: null,
       remoteUid: null,
+      sourceId: null,
+      peerCall: null,
     };
+  },
+  components: {
+    ElButton,
+    ElSelect,
+    ElOption,
   },
   mounted() {
     window.api.receive("fromMain", (result) => {
@@ -133,7 +167,12 @@ export default {
   },
   methods: {
     async toggleStream() {
-      const source = this.sources.find((a) => (a.name = "gametxt-desktop"));
+      if (this.peerCall) {
+        this.peerCall.close();
+        this.peerCall = null;
+        return;
+      }
+      const source = this.sources.find((a) => a.id === this.sourceId);
 
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: false,
@@ -147,14 +186,35 @@ export default {
         },
       });
 
-      this.peer.call(this.remoteUid, stream);
+      this.peerCall = this.peer.call(this.remoteUid, stream);
+    },
+  },
+  watch: {
+    // whenever question changes, this function will run
+    sourceId() {
+      if (this.peerCall) {
+        this.toggleStream();
+      }
     },
   },
 };
 </script>
 
-<style>
-* {
-  color: white;
+<style scoped>
+#window-selector {
+  display: block;
+}
+#stream-button {
+  margin-top: 10px;
+}
+#container {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+#window-selector-container {
+  width: 200px;
 }
 </style>

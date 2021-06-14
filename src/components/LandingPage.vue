@@ -132,7 +132,7 @@ body {
 }
 
 #left-container {
-  flex: 1;
+  flex: 4;
 }
 
 #right-container {
