@@ -7,7 +7,7 @@
 
       <h2 class="title">Stream PC to Phone</h2>
 
-      <h2 id="instruction-title">Instructions</h2>
+      <h2 class="section-title">Instructions</h2>
       <ol id="instruction-list">
         <li>
           Install and open the app on your phone. Get it
@@ -23,6 +23,15 @@
           the same wifi network.
         </li>
       </ol>
+      <h2 class="section-title">Help & Feedback</h2>
+      <p class="section-subtitle">Join the discord server</p>
+      <a href="#" @click="openDiscord">
+        <img
+          id="discord"
+          src="~@/assets/Discord-Logo+Wordmark-White.png"
+          alt="electron-vue"
+        />
+      </a>
     </div>
     <div id="right-container">
       <Streamer />
@@ -39,6 +48,9 @@
 
 <script>
 import Streamer from "./Streamer.vue";
+
+// const PERMANENT_LINK_TO_DISCORD = "https://discord.gg/bAR8VAMqCE";
+
 export default {
   name: "landing-page",
   data() {
@@ -58,6 +70,9 @@ export default {
     },
     openGamePassLink() {
       // shell.openExternal("https://www.xbox.com/play");
+    },
+    openDiscord() {
+      // shell.openExternal(PERMANENT_LINK_TO_DISCORD);
     },
   },
   mounted() {},
@@ -100,6 +115,26 @@ body {
   margin-bottom: 26px;
 }
 
+.section-title {
+  margin-top: 3em;
+  margin-bottom: 0.5em;
+  font-size: 1.2em;
+  line-height: 1.5em;
+}
+
+.section-subtitle {
+  font-size: 1.2em;
+  line-height: 1.5em;
+}
+
+#discord {
+  margin-top: 14px;
+  width: 300px;
+  padding: 4px 100px;
+  border: solid white 1px;
+  border-radius: 4px;
+}
+
 #toggle-streaming {
   font-size: 1.2em;
   cursor: pointer;
@@ -110,13 +145,6 @@ body {
   background: none;
   border: 1px solid white;
   margin-bottom: 7px;
-}
-
-#instruction-title {
-  margin-top: 3em;
-  margin-bottom: 0.5em;
-  font-size: 1.2em;
-  line-height: 1.5em;
 }
 
 #instruction-list {
