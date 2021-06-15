@@ -49,7 +49,7 @@
 <script>
 import Streamer from "./Streamer.vue";
 
-// const PERMANENT_LINK_TO_DISCORD = "https://discord.gg/bAR8VAMqCE";
+const PERMANENT_LINK_TO_DISCORD = "https://discord.gg/bAR8VAMqCE";
 
 export default {
   name: "landing-page",
@@ -64,15 +64,16 @@ export default {
       this.videoStreamer.toggleStream();
     },
     openMobileAppLink() {
-      // shell.openExternal(
-      //   "https://play.google.com/store/apps/details?id=com.learningmachine.big"
-      // );
+      window.api.send("toMain", {
+        openUrl:
+          "https://play.google.com/store/apps/details?id=com.learningmachine.big",
+      });
     },
     openGamePassLink() {
-      // shell.openExternal("https://www.xbox.com/play");
+      window.api.send("toMain", { openUrl: "https://www.xbox.com/play" });
     },
     openDiscord() {
-      // shell.openExternal(PERMANENT_LINK_TO_DISCORD);
+      window.api.send("toMain", { openUrl: PERMANENT_LINK_TO_DISCORD });
     },
   },
   mounted() {},

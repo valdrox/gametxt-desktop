@@ -6,6 +6,7 @@ import {
   BrowserWindow,
   ipcMain,
   desktopCapturer,
+  shell,
 } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
@@ -119,7 +120,7 @@ const getSourcesWithThumbnails = async () => {
 };
 
 // to recieve stuff
-ipcMain.on("toMain", async (event, { init, status }) => {
+ipcMain.on("toMain", async (event, { init, status, openUrl }) => {
   if (init) {
     getSourcesWithThumbnails().then((sources) => {
       win.webContents.send("fromMain", { sources });
@@ -128,5 +129,8 @@ ipcMain.on("toMain", async (event, { init, status }) => {
     findLocalService().then((service) => {
       win.webContents.send("fromMain", { service });
     });
+  }
+  if (openUrl) {
+    shell.openExternal(openUrl);
   }
 });
