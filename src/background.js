@@ -10,9 +10,14 @@ import {
 } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
-
-const path = require("path");
+import path from "path";
 import Bonjour from "bonjour";
+import * as Sentry from "@sentry/electron";
+
+Sentry.init({
+  dsn:
+    "https://4f64bbf47aef4ebd884e7b92f9af5199@o232050.ingest.sentry.io/5818207",
+});
 
 const bonjour = Bonjour();
 const isDevelopment = process.env.NODE_ENV !== "production";

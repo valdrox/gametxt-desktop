@@ -1,3 +1,10 @@
+const Sentry = require("@sentry/electron/dist/renderer");
+
+Sentry.init({
+  dsn:
+    "https://4f64bbf47aef4ebd884e7b92f9af5199@o232050.ingest.sentry.io/5818207",
+});
+
 const { contextBridge, ipcRenderer } = require("electron");
 
 // Expose protected methods that allow the renderer process to use
@@ -18,5 +25,3 @@ contextBridge.exposeInMainWorld("api", {
     }
   },
 });
-
-export default () => {};
