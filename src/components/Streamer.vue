@@ -57,7 +57,6 @@ export default {
     window.api.receive("fromMain", (result) => {
       if (result.sources) {
         this.sources = result.sources;
-        console.log("sources", this.sources.length);
       }
       if (result.service?.txt?.uid) {
         this.remoteUid = result.service.txt.uid;
