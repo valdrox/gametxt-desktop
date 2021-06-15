@@ -36,6 +36,7 @@ async function createWindow() {
       enableRemoteModule: false,
       preload: path.join(__dirname, "preload.js"),
     },
+    autoHideMenuBar: true,
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
