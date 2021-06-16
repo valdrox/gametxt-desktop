@@ -13,6 +13,7 @@ import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import path from "path";
 import Bonjour from "bonjour";
 import * as Sentry from "@sentry/electron";
+import { autoUpdater } from "electron-updater";
 
 Sentry.init({
   dsn:
@@ -52,6 +53,7 @@ async function createWindow() {
     createProtocol("app");
     // Load the index.html when not in development
     win.loadURL("app://./index.html");
+    autoUpdater.checkForUpdatesAndNotify();
   }
 }
 
